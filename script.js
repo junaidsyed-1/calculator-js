@@ -1,40 +1,12 @@
 // console.log("Working")
 
-
-
-// const calculate = (inputId, btnclass,) => {
-//     let string = "";
-
-//     const buttons = document.querySelectorAll(btnclass);
-//     Array.from(buttons).forEach((button) => {
-//         button.addEventListener("click", (event) => {
-//             if (event.target.innerHTML == '=') {
-//                 string = eval(string);
-//                 document.getElementById(inputId).value = string;
-//             }
-//             else if (event.target.innerHTML == 'A') {
-//                 string = "";
-//                 document.getElementById(inputId).value = string;
-//             }
-//             else {
-//                 console.log(event.target);
-//                 string = string + event.target.innerHTML;
-//                 document.getElementById(inputId).value = string;
-//             }
-
-//         })
-//     })
-// }
-
-// calculate('input1', 'button')
-
 const calculate = (inputId, buttonClass, buttonHandlers) => {
     let inputString = "";
 
     const handleButtonClick = (event) => {
         const buttonValue = event.target.innerHTML;
         const buttonHandler = buttonHandlers[buttonValue];
-        console.log(buttonHandlers)
+        // console.log(buttonHandlers)
         if (buttonHandler) {
             inputString = buttonHandler(inputString);
             document.getElementById(inputId).value = inputString;
@@ -56,7 +28,21 @@ const clearButtonHandler = () => () => {
 }
 
 const equalButtonHandler = () => (string) => {
-    if (string == "") return "";
+    if (string == "") {
+        throw new Error("Invalid Input expression : Empty string");
+    }
+    const operators = ["+", '*', '-'];
+    if (operators.includes(string[0])) {
+        throw new Error(`Invalid Input expression : can not start with operator ${string[0]}`);
+    }
+
+    const numberOperators = string.split("").filter(char => operators.includes(char)).length;
+    if (numberOperators == 0) {
+        throw new Error("Invalid Input expression : No operators found")
+    } else if (numberOperators > 1) {
+        throw new Error("Invalid Input expression : Multiple operators found")
+    }
+
     try {
         return eval(string);
     } catch (error) {
